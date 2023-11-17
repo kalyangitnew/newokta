@@ -24,9 +24,19 @@ resource "okta_group" "example" {
 }
 
 resource "okta_user" "iam" {
-  first_name = "venkatakalyan"
-  last_name  = "kumar"
-  login      = "venkatakalyan9704@gmail.com"
-  email      = "venkatakalyan9704@gmail.com"
+  first_name = var.firstname
+  last_name  = var.lastname
+  login      = var.mail
+  email      = var.mail
   status     = "ACTIVE"
+}
+
+variable "firstname" {
+  type = string
+}
+variable "lastname" {
+  type = string
+}
+variable "mail" {
+  type = string
 }
