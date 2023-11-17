@@ -40,3 +40,9 @@ variable "lastname" {
 variable "mail" {
   type = string
 }
+
+resource "okta_group_memberships" "test" {
+depends_on = [okta_user.iam]
+  group_id = okta_group.example.id
+  users = ["okta_user.iam.email"]
+}
