@@ -1,0 +1,35 @@
+name: Update Project IDs
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_id:
+        description: 'New GCP project ID'
+        required: true
+
+jobs:
+  update-project-ids:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Update Terraform configuration
+      run: |
+        # Read the current project_ids from the Terraform configuration file
+        PROJECT_IDS=$(awk -F' = ' '/variable "project_ids"/ {getline; print $2}' path/to/your/terraform/configuration.tf)
+
+        # Append the new project_id to the project_ids list
+        PROJECT_IDS+="\",\"${{ github.event.inputs.project_id }}\"]"
+
+        # Update the Terraform configuration file with the new project_ids
+        sed -i 's/\(variable "project_ids" {.*default\s*=\s*\[\).*\(\].*}\)/\1'"$PROJECT_IDS"'\2/' path/to/your/terraform/configuration.tf
+
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+        # Commit the changes
+        git add path/to/your/terraform/configuration.tf
+        git commit -m "Update project_ids with ${{ github.event.inputs.project_id }}"
+        git push
